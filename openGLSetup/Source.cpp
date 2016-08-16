@@ -84,8 +84,9 @@ void processSpecialKeys(int key, int x, int y)
 		{
 			red = 1.0;
 			green = 0.0;
-			blue = 0.0; break;
+			blue = 0.0; 
 		}
+		break;
 	case GLUT_KEY_F2:
 		red = 0.0;
 		green = 1.0;
