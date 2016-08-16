@@ -76,11 +76,16 @@ void processNormalKeys(unsigned char key, int x, int y)
 
 void processSpecialKeys(int key, int x, int y)
 {
+	int mod;
 	switch (key) {
 	case GLUT_KEY_F1:
-		red = 1.0;
-		green = 0.0;
-		blue = 0.0; break;
+		mod = glutGetModifiers();
+		if (mod==(GLUT_ACTIVE_CTRL|GLUT_ACTIVE_ALT))
+		{
+			red = 1.0;
+			green = 0.0;
+			blue = 0.0; break;
+		}
 	case GLUT_KEY_F2:
 		red = 0.0;
 		green = 1.0;
