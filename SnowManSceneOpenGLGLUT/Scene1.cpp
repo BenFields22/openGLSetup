@@ -1,5 +1,5 @@
 #include <gl/freeglut.h>
-#include <cmath>
+#include <math.h>
 using namespace std;
 
 //declare global variables
@@ -26,6 +26,7 @@ void mouseButton(int button, int state, int x, int y)
 		{
 			angle += deltaAngle;
 			xOrigin = -1;
+			deltaAngle = 0;
 		}
 		else
 		{
@@ -39,7 +40,7 @@ void mouseMove(int x, int y)
 	if (xOrigin >=0)
 	{
 		//update deltaangle
-		deltaAngle = (x - xOrigin)* 0.001f;
+		deltaAngle = (x - xOrigin)* 0.0003f;
 
 		//update cameras direction
 		lx = sin(angle + deltaAngle);
@@ -135,12 +136,12 @@ void pressKey(int key, int xx, int yy)
 	
 	switch (key)
 	{
-	case GLUT_KEY_LEFT:
+	/*case GLUT_KEY_LEFT:
 		deltaAngle = -0.01f;
 		break;
 	case GLUT_KEY_RIGHT:
 		deltaAngle = 0.01f;
-		break;
+		break;*/
 	case GLUT_KEY_UP:
 		deltaMove = 0.5f;
 		break;
@@ -153,8 +154,8 @@ void pressKey(int key, int xx, int yy)
 void releaseKey(int key, int x, int y) {
 
 	switch (key) {
-	case GLUT_KEY_LEFT:
-	case GLUT_KEY_RIGHT: deltaAngle = 0.0f; break;
+	//case GLUT_KEY_LEFT:
+	// GLUT_KEY_RIGHT: deltaAngle = 0.0f; break;
 	case GLUT_KEY_UP:
 	case GLUT_KEY_DOWN: deltaMove = 0; break;
 	}
@@ -203,10 +204,10 @@ int main(int argc, char **argv)
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 	glutIdleFunc(renderScene);
+
 	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc(pressKey);
-
 	glutSpecialUpFunc(releaseKey);
 
 	//mousebutton callbacks
