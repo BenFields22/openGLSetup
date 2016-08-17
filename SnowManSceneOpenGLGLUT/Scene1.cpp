@@ -1,6 +1,12 @@
 #include <gl/freeglut.h>
 #include <math.h>
 using namespace std;
+#define RED 1
+#define GREEN 2
+#define BLUE 3
+#define ORANGE 4
+
+int red, green, blue;
 
 //declare global variables
 //anle of rotation for the camera direction
@@ -33,6 +39,10 @@ void mouseButton(int button, int state, int x, int y)
 			xOrigin = x;
 		}
 	}
+	/*if (button == GLUT_RIGHT_BUTTON)
+	{
+		createGLUTMenus();
+	}*/
 }
 
 void mouseMove(int x, int y)
@@ -189,6 +199,46 @@ void processNormalKeys(unsigned char key, int x, int y)
 		exit(0);
 	}
 }
+void processMenuEvents(int option)
+{
+	switch (option) {
+	case RED:
+		red = 1.0f;
+		green = 0.0f;
+		blue = 0.0f; break;
+	case GREEN:
+		red = 0.0f;
+		green = 1.0f;
+		blue = 0.0f; break;
+	case BLUE:
+		red = 0.0f;
+		green = 0.0f;
+		blue = 1.0f; break;
+	case ORANGE:
+		red = 1.0f;
+		green = 0.5f;
+		blue = 0.5f; break;
+	}
+}
+void createGLUTMenus()
+{
+	int menu;
+
+	//create the menu and tell glut that processMenuEvents will handle events
+	menu = glutCreateMenu(processMenuEvents);
+
+	//add entries to our menu
+	glutAddMenuEntry("Red", RED);
+	glutAddMenuEntry("Blue", BLUE);
+	glutAddMenuEntry("Green", GREEN);
+	glutAddMenuEntry("Orange", ORANGE);
+
+	//attach the menyu to the right button
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
+
 
 int main(int argc, char **argv)
 {
@@ -199,6 +249,7 @@ int main(int argc, char **argv)
 	glutInitWindowPosition(250, 100);
 	glutInitWindowSize(720, 720);
 	glutCreateWindow("SNOWMAN GLOBE - GLUT Tutorial");
+	createGLUTMenus();
 
 	// register callbacks
 	glutDisplayFunc(renderScene);
@@ -213,6 +264,7 @@ int main(int argc, char **argv)
 	//mousebutton callbacks
 	glutMouseFunc(mouseButton);
 	glutMotionFunc(mouseMove);
+
 
 	// OpenGL init
 	glEnable(GL_DEPTH_TEST);
