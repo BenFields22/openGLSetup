@@ -10,6 +10,43 @@ float lx = 0.0f, lz = -1.0f;
 //xz position of the camera
 float x = 0.0f, z = 5.0f;
 
+//key states. values will be zero when no key is begin pressed
+float deltaAngle = 0.0f;
+float deltaMove = 0.0f;
+
+float xOrigin = -1;
+
+void mouseButton(int button, int state, int x, int y)
+{
+	//only start motion if the left button is pressed
+	if (button ==GLUT_LEFT_BUTTON)
+	{
+		//when button released
+		if (state == GLUT_UP)
+		{
+			angle += deltaAngle;
+			xOrigin = -1;
+		}
+		else
+		{
+			xOrigin = x;
+		}
+	}
+}
+
+void mouseMove(int x, int y)
+{
+	if (xOrigin >=0)
+	{
+		//update deltaangle
+		deltaAngle = (x - xOrigin)* 0.001f;
+
+		//update cameras direction
+		lx = sin(angle + deltaAngle);
+		lz = -cos(angle + deltaAngle);
+
+	}
+}
 void drawSnowMan()
 {
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -35,9 +72,30 @@ void drawSnowMan()
 	glColor3f(1.0f, 0.5f, 0.5f);
 	glutSolidCone(0.08f, 0.5f, 10, 2);
 }
+void computePos(float deltaMove)
+{
+	x += deltaMove * lx * 0.1f;
+	z += deltaMove *lz * 0.1f;
+}
+
+void computeDir(float deltaAngle)
+{
+	angle += deltaAngle;
+	lx = sin(angle);
+	lz = -cos(angle);
+}
+
 
 void renderScene(void)
 {
+	if (deltaMove)
+	{
+		computePos(deltaMove);
+	}
+	if (deltaAngle)
+	{
+		computeDir(deltaAngle);
+	}
 	//clear color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -72,32 +130,36 @@ void renderScene(void)
 	glutSwapBuffers();
 }
 
-void processSpecialKeys(int key, int xx, int yy)
+void pressKey(int key, int xx, int yy)
 {
-	float fraction = 0.06f;
-	int mod;
+	
 	switch (key)
 	{
 	case GLUT_KEY_LEFT:
-		angle -= 0.01f;
-		lx = sin(angle);
-		lz = -cos(angle);
+		deltaAngle = -0.01f;
 		break;
 	case GLUT_KEY_RIGHT:
-		angle += 0.01f;
-		lx = sin(angle);
-		lz = -cos(angle);
+		deltaAngle = 0.01f;
 		break;
 	case GLUT_KEY_UP:
-		x += lx + fraction;
-		z += lz*fraction;
+		deltaMove = 0.5f;
 		break;
 	case GLUT_KEY_DOWN:
-		x -= lx + fraction;
-		z -= lz*fraction;
+		deltaMove = -0.5f;
 		break;
 	}
 }
+
+void releaseKey(int key, int x, int y) {
+
+	switch (key) {
+	case GLUT_KEY_LEFT:
+	case GLUT_KEY_RIGHT: deltaAngle = 0.0f; break;
+	case GLUT_KEY_UP:
+	case GLUT_KEY_DOWN: deltaMove = 0; break;
+	}
+}
+
 void changeSize(int w, int h)
 {
 	//prevent a divide by zero, when window is too short
@@ -125,7 +187,6 @@ void processNormalKeys(unsigned char key, int x, int y)
 	{
 		exit(0);
 	}
-
 }
 
 int main(int argc, char **argv)
@@ -142,8 +203,15 @@ int main(int argc, char **argv)
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
 	glutIdleFunc(renderScene);
+	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(processNormalKeys);
-	glutSpecialFunc(processSpecialKeys);
+	glutSpecialFunc(pressKey);
+
+	glutSpecialUpFunc(releaseKey);
+
+	//mousebutton callbacks
+	glutMouseFunc(mouseButton);
+	glutMotionFunc(mouseMove);
 
 	// OpenGL init
 	glEnable(GL_DEPTH_TEST);
