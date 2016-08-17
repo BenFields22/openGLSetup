@@ -1,12 +1,16 @@
 #include <gl/freeglut.h>
 #include <math.h>
+#include <iostream>
+
 using namespace std;
 #define RED 1
 #define GREEN 2
 #define BLUE 3
 #define ORANGE 4
 
-int red, green, blue;
+
+
+int red = 1.0f, green = 1.0f, blue = 1.0f;
 
 //declare global variables
 //anle of rotation for the camera direction
@@ -24,6 +28,7 @@ float xOrigin = -1;
 
 void mouseButton(int button, int state, int x, int y)
 {
+	cout << "Mouse button pressed" << endl;
 	//only start motion if the left button is pressed
 	if (button ==GLUT_LEFT_BUTTON)
 	{
@@ -60,13 +65,15 @@ void mouseMove(int x, int y)
 }
 void drawSnowMan()
 {
-	glColor3f(1.0f, 1.0f, 1.0f);
+	//cout << "Drawing snowman" << endl;
+	glColor3f(red, green, blue);
 
 	//draw body
 	glTranslatef(0.0f, 0.75f, 0.0f);
 	glutSolidSphere(0.75f, 20, 20);
 
 	//draw head
+	//glColor3f(1.0f, 0.0f, 0.0f);
 	glTranslatef(0.0f, 1.0f, 0.0f);
 	glutSolidSphere(0.25f, 20, 20);
 
@@ -119,7 +126,7 @@ void renderScene(void)
 
 
 	//draw ground
-	glColor3f(0.9f, 0.9f, 0.9f);
+	glColor3f(.486f, 0.988f, 0.0f);
 	glBegin(GL_QUADS);
 		glVertex3f(-100.0f, 0.0f, -100.0f);
 		glVertex3f(-100.0f, 0.0f, 100.0f);
@@ -220,12 +227,20 @@ void processMenuEvents(int option)
 		blue = 0.5f; break;
 	}
 }
+
+void processSecondMenu()
+{
+
+}
 void createGLUTMenus()
 {
-	int menu;
+	
+
+
+	int Mainmenu;
 
 	//create the menu and tell glut that processMenuEvents will handle events
-	menu = glutCreateMenu(processMenuEvents);
+	Mainmenu = glutCreateMenu(processMenuEvents);
 
 	//add entries to our menu
 	glutAddMenuEntry("Red", RED);
@@ -237,6 +252,7 @@ void createGLUTMenus()
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 }
+
 
 
 

@@ -27,7 +27,7 @@ void renderScene(void)
 		glVertex3f(0.0, 2, 0.0);
 
 	glEnd();
-	angle += 0.4f;
+	angle += 1.0f;
 
 	glutSwapBuffers();
 }
